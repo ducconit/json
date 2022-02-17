@@ -1,0 +1,31 @@
+{
+  "name": "dnt/json",
+  "license": "MIT",
+  "autoload": {
+    "psr-4": {
+      "DNT\\Json\\": "src/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Tests\\": "tests/"
+    }
+  },
+  "authors": [
+    {
+      "name": "Ducnt",
+      "email": "ducconit@gmail.com"
+    }
+  ],
+  "minimum-stability": "dev",
+  "require": {
+    "php": "^8.1",
+    "illuminate/macroable": "v9.x"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "v9.5"
+  },
+  "scripts": {
+    "test": "phpunit"
+  }
+}
