@@ -127,7 +127,7 @@ class Json implements ArrayAccess, Jsonable, JsonSerializable, Stringable
 		return true;
 	}
 
-	public function toJson(int $flag = JSON_FORCE_OBJECT): string
+	public function toJson(int $flag = 0): string
 	{
 		return json_encode($this->attributes, $flag);
 	}
