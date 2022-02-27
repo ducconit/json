@@ -23,25 +23,16 @@ class Json implements ArrayAccess, Jsonable, JsonSerializable, Stringable
 	private array $attributes = [];
 
 	/**
-	 * @throws FileNotFoundException
-	 * @throws PathNotEmptyException
-	 * @throws PathMustBeFileException
-	 * @throws InvalidJsonException
-	 */
-	public function __construct(string $path = '', bool $ensure = false, int $mode = 0755, $recursive = true)
-	{
-		$this->setPath($path);
-		$this->_loadFile($ensure, $mode, $recursive);
-	}
-
-	/**
 	 * @throws PathNotEmptyException
 	 * @throws FileNotFoundException
 	 * @throws PathMustBeFileException
 	 * @throws InvalidJsonException
 	 */
-	private function _loadFile(bool $ensure, int $mode, bool $recursive): void
+	private function _loadFile(bool $ensure = false, int $mode = 0755, $recursive = true): void
 	{
+		if ($this->loaded) {
+			return;
+		}
 		$path = $this->getPath();
 		$this->_checkPath();
 		if (!file_exists($path)) {
@@ -73,6 +64,8 @@ class Json implements ArrayAccess, Jsonable, JsonSerializable, Stringable
 	}
 
 	/**
+	 * @param string $path
+	 * @return Jsonable
 	 * @throws PathNotEmptyException
 	 */
 	public function setPath(string $path): Jsonable
@@ -105,14 +98,17 @@ class Json implements ArrayAccess, Jsonable, JsonSerializable, Stringable
 	}
 
 	/**
-	 * @throws FileNotFoundException
-	 * @throws PathNotEmptyException
 	 * @throws PathMustBeFileException
+	 * @throws FileNotFoundException
 	 * @throws InvalidJsonException
+	 * @throws PathNotEmptyException
 	 */
 	public static function make(string $path, bool $ensure = false, int $mode = 0755, $recursive = true): Jsonable
 	{
-		return new static($path, $ensure, $mode, $recursive);
+		$instance = new static();
+		$instance->setPath($path);
+		$instance->_loadFile($ensure, $mode, $recursive);
+		return $instance;
 	}
 
 	public function setAttributes(array $attributes = []): Jsonable
@@ -212,5 +208,11 @@ class Json implements ArrayAccess, Jsonable, JsonSerializable, Stringable
 	public function __toString()
 	{
 		return $this->toJson();
+	}
+
+	public function reload(): Jsonable
+	{
+		$this->loaded = false;
+		return $this;
 	}
 }

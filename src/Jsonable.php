@@ -23,4 +23,6 @@ interface Jsonable
 	public function setAttributes(array $attributes = []): Jsonable;
 
 	public function all(): array;
+
+	public function reload(): Jsonable;
 }
