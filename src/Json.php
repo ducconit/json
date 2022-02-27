@@ -16,11 +16,25 @@ class Json implements ArrayAccess, Jsonable, JsonSerializable, Stringable
 {
 	use Macroable;
 
-	private string $path;
+	private string $path = '';
 
 	private bool $loaded = false;
 
 	private array $attributes = [];
+
+	/**
+	 * @throws PathMustBeFileException
+	 * @throws FileNotFoundException
+	 * @throws InvalidJsonException
+	 * @throws PathNotEmptyException
+	 */
+	public static function make(string $path, bool $ensure = false, int $mode = 0755, $recursive = true): Jsonable
+	{
+		$instance = new static();
+		$instance->setPath($path);
+		$instance->_loadFile($ensure, $mode, $recursive);
+		return $instance;
+	}
 
 	/**
 	 * @throws PathNotEmptyException
@@ -95,20 +109,6 @@ class Json implements ArrayAccess, Jsonable, JsonSerializable, Stringable
 	private function _put($contents, $lock = false): bool|int
 	{
 		return file_put_contents($this->getPath(), $contents, $lock ? LOCK_EX : FILE_TEXT);
-	}
-
-	/**
-	 * @throws PathMustBeFileException
-	 * @throws FileNotFoundException
-	 * @throws InvalidJsonException
-	 * @throws PathNotEmptyException
-	 */
-	public static function make(string $path, bool $ensure = false, int $mode = 0755, $recursive = true): Jsonable
-	{
-		$instance = new static();
-		$instance->setPath($path);
-		$instance->_loadFile($ensure, $mode, $recursive);
-		return $instance;
 	}
 
 	public function setAttributes(array $attributes = []): Jsonable
